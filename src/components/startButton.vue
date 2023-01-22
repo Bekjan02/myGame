@@ -1,14 +1,11 @@
 <script setup lang="ts">
 import { useGameStatus } from '@/store/setGameStatus'
-import localStorageUtil from '@/utils/localStorageUtils';
-
-const { setValue } = localStorageUtil
 
 const { setGameStatus } = useGameStatus()
 
 const startGame = () => {
   setGameStatus(true)
-  setValue('answers', [])
+  localStorage.setItem('answers', JSON.stringify([]))
 }
 
 </script>

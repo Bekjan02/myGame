@@ -5,13 +5,13 @@ import Modal from '@/components/modal/Modal.vue';
 import Alert from '../alert/Alert.vue';
 import { useStatisticsStore } from '@/store/statistics';
 
-const seconds = ref(10)
+const seconds = ref(60)
 const field = ref()
 const dialogState = useDialogStore()
 const answer = ref('')
 const alertIsOpen = ref(false)
 const isCorrect = ref(false)
-const { addCorrectAnser, addWrongAnswer } = useStatisticsStore()
+const { addCorrectAnswer, addWrongAnswer } = useStatisticsStore()
 
 let interval: ReturnType<typeof setInterval>;
 
@@ -31,36 +31,34 @@ const closeModal = async () => {
    const isValid = await field?.value.validate()
    const localStorageAnswers = JSON.parse(`${localStorage.getItem('answers')}`)
    alertIsOpen.value = true
-   if (seconds.value === 0) {
+   if (seconds.value === 0 || isValid.length > 0) {
       clearInterval(interval)
       dialogState.closeModal()
       const newData = [...localStorageAnswers, { id: dialogState.dialog.id, isCorrect: 'wrong', value: dialogState.dialog.value }]
       localStorage.setItem('answers', JSON.stringify(newData))
-      seconds.value = 5
+      seconds.value = 60
       answer.value = ''
       addWrongAnswer(dialogState.dialog.value)
       isCorrect.value = false
-
-   }
-   if (isValid.length === 0) {
+   } else {
       if (answer.value.toLowerCase() === dialogState.dialog.answer.toLowerCase()) {
-         seconds.value = 5
-         answer.value = ''
-         clearInterval(interval)
-         dialogState.closeModal()
          localStorage.setItem('answers', JSON.stringify([...localStorageAnswers, { id: dialogState.dialog.id, isCorrect: 'correct', value: dialogState.dialog.value }]))
-         addCorrectAnser(dialogState.dialog.value)
+         addCorrectAnswer(dialogState.dialog.value)
          isCorrect.value = true
       } else {
-         clearInterval(interval)
-         dialogState.closeModal()
          localStorage.setItem('answers', JSON.stringify([...localStorageAnswers, { id: dialogState.dialog.id, isCorrect: 'wrong', value: dialogState.dialog.value }]))
-         seconds.value = 5
-         answer.value = ''
          addWrongAnswer(dialogState.dialog.value)
          isCorrect.value = false
       }
+      clearInterval(interval)
+      dialogState.closeModal()
+      seconds.value = 60
+      answer.value = ''
    }
+}
+
+const closeAlert = () => {
+   alertIsOpen.value = false
 }
 
 watch(() => dialogState.isOpen, (value) => {
@@ -72,6 +70,7 @@ watch(() => dialogState.isOpen, (value) => {
 const rules = [
    (v: string) => !!v || 'Заполните поле'
 ]
+
 
 </script>
 
@@ -90,7 +89,7 @@ const rules = [
          <v-btn color="primary" block @click="closeModal">Ответить</v-btn>
       </template>
    </Modal>
-   <Alert :modelValue="alertIsOpen" :answer="dialogState.dialog.answer" :isCorrect="isCorrect" />
+   <Alert :modelValue="alertIsOpen" :answer="dialogState.dialog.answer" :isCorrect="isCorrect" @close="closeAlert" />
 </template>
 
 <style scoped>

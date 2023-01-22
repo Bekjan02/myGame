@@ -12,12 +12,10 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import localStorageUtil from '@/utils/localStorageUtils';
 const router = useRouter()
 const form = ref()
 const name = ref('')
 
-const { setValue } = localStorageUtil
 
 const rules = [
   (v: string) => !!v || 'Это обязательное поле',
@@ -29,7 +27,7 @@ const rules = [
 const onSumbit = async () => {
   const formValidate = await form.value.validate()
   if (formValidate.valid) {
-    setValue('name', name.value)
+    localStorage.setItem('name', name.value)
     router.push({ path: '/game' })
   }
 }

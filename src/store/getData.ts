@@ -1,4 +1,4 @@
-import { type Ref, ref, watch } from 'vue'
+import { type Ref, ref } from 'vue'
 import { defineStore } from 'pinia'
 
 
@@ -56,7 +56,7 @@ export const useGetDataStore = defineStore('getData', (): GetDataState => {
                 return acc
             }, {})
 
-            Object.keys(newData).reduce((acc: Acc, item: string, i: number) => {
+            Object.keys(newData).reduce((acc: Acc, item: string) => {
                 newData[item].sort((a: Data, b: Data) => a.value - b.value)
                 if (newData[item].length > 5 || newData[item].length < 5) {
                     delete newData[item]

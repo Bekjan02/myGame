@@ -1,8 +1,6 @@
 import type { Data } from './getData';
 import { defineStore } from "pinia";
 import { ref, type Ref } from "vue";
-import localStorageUtil from "@/utils/localStorageUtils";
-
 
 interface DialogState {
    dialog: Data;
@@ -10,8 +8,6 @@ interface DialogState {
    isOpen: Ref<boolean>;
    closeModal: () => void
 }
-
-const { setValue } = localStorageUtil
 
 export const useDialogStore = defineStore("dialog", (): DialogState => {
    const dialog = ref<any>({});
@@ -24,7 +20,6 @@ export const useDialogStore = defineStore("dialog", (): DialogState => {
 
    const closeModal = () => {
       isOpen.value = false
-      setValue('answers', {})
    }
 
    return {
