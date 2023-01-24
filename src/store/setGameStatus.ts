@@ -3,10 +3,10 @@ import { type Ref, ref, watch } from "vue";
 
 interface GameStatusState {
     isGameStarted: Ref<boolean>;
-    setGameStatus: (status: boolean) => any;
+    setGameStatus: (status: boolean) => void;
 }
 
-export const useGameStatus = defineStore("gameStatus", (): GameStatusState => {
+export const useGameStatusStore = defineStore("gameStatus", (): GameStatusState => {
     const isGameStarted = ref(false);
     const isGameStartedLocalStorage = localStorage.getItem('isGameStarted');
 

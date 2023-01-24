@@ -1,19 +1,20 @@
 <script setup lang="ts">
-import { useGameStatus } from '@/store/setGameStatus'
+import { useGameStatusStore } from '@/store/setGameStatus'
 
-const { setGameStatus } = useGameStatus()
+const { setGameStatus } = useGameStatusStore()
 
 const startGame = () => {
   setGameStatus(true)
   localStorage.setItem('answers', JSON.stringify([]))
 }
-
 </script>
 
 <template>
-  <v-btn @click="startGame">
-    начать игру
-  </v-btn>
+  <div class="d-flex justify-center align-center h-screen">
+    <v-btn @click="startGame">
+      начать игру
+    </v-btn>
+  </div>
 </template>
 
 

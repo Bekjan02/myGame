@@ -10,8 +10,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { ref } from 'vue';
 const router = useRouter()
 const form = ref()
 const name = ref('')

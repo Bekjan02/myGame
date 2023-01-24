@@ -1,54 +1,32 @@
-import { type Ref, ref } from 'vue'
+import { type Ref, ref, computed, type ComputedRef } from 'vue'
 import { defineStore } from 'pinia'
+import type { Question } from '@/types';
 
-
-interface Category {
-    id: number
-    title: string
-    created_at: string
-    updated_at: string
-    clues_count: number
-}
-
-export interface Data {
-    id: number,
-    answer: string,
-    question: string,
-    value: number,
-    airdate: string,
-    created_at: string,
-    updated_at: string,
-    category_id: number,
-    game_id: number,
-    invalid_count: null,
-    category: Category
-}
 
 interface GetDataState {
-    data: Ref<any>;
+    data: Ref<any[]>;
     error: unknown;
-    getData: () => Promise<unknown>;
+    getData: ComputedRef<Promise<void>>;
     loading: Ref<boolean>;
 }
 
 interface Acc {
-    [key: string]: Data[]
+    [key: string]: Question[]
 }
 
-
 export const useGetDataStore = defineStore('getData', (): GetDataState => {
-    const data = ref<any[]>([])
-    const loading = ref<boolean>(false)
-    const error = ref<unknown>(null)
+    const data = ref([])
+    const loading = ref(false)
+    const error = ref()
 
-    const getData = async () => {
+    const getData = computed(async () => {
         loading.value = true
         try {
             const res = await fetch('http://jservice.io/api/clues?min_date=1985-02-20')
             const json = await res.json()
 
-            const filteredData = json.filter((item: Data) => item.value !== null)
-            const newData = filteredData.reduce((acc: Acc, item: Data) => {
+            const filteredData = json.filter((item: Question) => item.value !== null)
+            const newData = filteredData.reduce((acc: Acc, item: Question) => {
                 if (!acc[item.category.title]) {
                     acc[item.category.title] = []
                 }
@@ -57,7 +35,7 @@ export const useGetDataStore = defineStore('getData', (): GetDataState => {
             }, {})
 
             Object.keys(newData).reduce((acc: Acc, item: string) => {
-                newData[item].sort((a: Data, b: Data) => a.value - b.value)
+                newData[item].sort((a: Question, b: Question) => a.value - b.value)
                 if (newData[item].length > 5 || newData[item].length < 5) {
                     delete newData[item]
                 }
@@ -70,7 +48,7 @@ export const useGetDataStore = defineStore('getData', (): GetDataState => {
         } finally {
             loading.value = false
         }
-    }
+    })
 
 
     return { getData, data, error, loading }

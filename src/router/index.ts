@@ -1,20 +1,20 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Home from '../views/Home.vue'
+import Quiz from '../views/Quiz.vue'
 import Stat from '../views/Stat.vue'
 import Auth from '../views/Auth.vue'
 
-import main from '../layouts/Main.vue'
-import register from '../layouts/Register.vue'
+import Main from '../layouts/Main.vue'
+import Register from '../layouts/Register.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/game',
-      name: 'home',
-      component: Home,
+      name: 'quiz',
+      component: Quiz,
       meta: {
-        layout: main
+        layout: Main
       },
     },
     {
@@ -22,7 +22,7 @@ const router = createRouter({
       name: 'stat',
       component: Stat,
       meta: {
-        layout: main
+        layout: Main
       },
     },
     {
@@ -30,7 +30,7 @@ const router = createRouter({
       name: 'auth',
       component: Auth,
       meta: {
-        layout: register
+        layout: Register
       }
     },
   ]

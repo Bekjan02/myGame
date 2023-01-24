@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { useDialogStore } from '@/store/dialog';
 import { ref, watch } from 'vue';
-import Modal from '@/components/modal/Modal.vue';
-import Alert from '../alert/Alert.vue';
+import Alert from './Alert.vue';
 import { useStatisticsStore } from '@/store/statistics';
 
 const seconds = ref(60)
@@ -34,19 +33,19 @@ const closeModal = async () => {
    if (seconds.value === 0 || isValid.length > 0) {
       clearInterval(interval)
       dialogState.closeModal()
-      const newData = [...localStorageAnswers, { id: dialogState.dialog.id, isCorrect: 'wrong', value: dialogState.dialog.value }]
+      const newData = [...localStorageAnswers, { id: dialogState.dialog?.id, isCorrect: false, value: dialogState.dialog?.value }]
       localStorage.setItem('answers', JSON.stringify(newData))
       seconds.value = 60
       answer.value = ''
-      addWrongAnswer(dialogState.dialog.value)
+      addWrongAnswer(dialogState.dialog?.value)
       isCorrect.value = false
    } else {
-      if (answer.value.toLowerCase() === dialogState.dialog.answer.toLowerCase()) {
-         localStorage.setItem('answers', JSON.stringify([...localStorageAnswers, { id: dialogState.dialog.id, isCorrect: 'correct', value: dialogState.dialog.value }]))
+      if (answer.value.toLowerCase() === dialogState.dialog?.answer.toLowerCase()) {
+         localStorage.setItem('answers', JSON.stringify([...localStorageAnswers, { id: dialogState.dialog.id, isCorrect: true, value: dialogState.dialog.value }]))
          addCorrectAnswer(dialogState.dialog.value)
          isCorrect.value = true
       } else {
-         localStorage.setItem('answers', JSON.stringify([...localStorageAnswers, { id: dialogState.dialog.id, isCorrect: 'wrong', value: dialogState.dialog.value }]))
+         localStorage.setItem('answers', JSON.stringify([...localStorageAnswers, { id: dialogState.dialog?.id, isCorrect: false, value: dialogState.dialog?.value }]))
          addWrongAnswer(dialogState.dialog.value)
          isCorrect.value = false
       }
@@ -75,21 +74,21 @@ const rules = [
 </script>
 
 <template>
-   <Modal :modelValue="dialogState.isOpen">
-      <template #seconds>
+   <v-dialog :model-value="dialogState.isOpen" persistent>
+      <v-card>
          {{ seconds }}
-      </template>
-      <template #content>
-         {{ dialogState.dialog.question }}
-      </template>
-      <template #field>
-         <v-text-field autofocus v-model="answer" ref="field" hide-details="auto" :rules="rules" label="Answer" />
-      </template>
-      <template #actions>
-         <v-btn color="primary" block @click="closeModal">Ответить</v-btn>
-      </template>
-   </Modal>
-   <Alert :modelValue="alertIsOpen" :answer="dialogState.dialog.answer" :isCorrect="isCorrect" @close="closeAlert" />
+         <v-card-text>
+            {{ dialogState.dialog?.question }}
+         </v-card-text>
+         <v-card-item>
+            <v-text-field autofocus v-model="answer" ref="field" hide-details="auto" :rules="rules" label="Answer" />
+         </v-card-item>
+         <v-card-actions>
+            <v-btn color="primary" block @click="closeModal">Ответить</v-btn>
+         </v-card-actions>
+      </v-card>
+   </v-dialog>
+   <Alert :modelValue="alertIsOpen" :answer="dialogState.dialog?.answer" :isCorrect="isCorrect" @close="closeAlert" />
 </template>
 
 <style scoped>

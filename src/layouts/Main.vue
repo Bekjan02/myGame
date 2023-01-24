@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import Header from "@/components/Header.vue";
-import { useGameStatus } from '@/store/setGameStatus'
-import StartButton from "@/components/startButton.vue";
-const store = useGameStatus()
+import { useGameStatusStore } from '@/store/setGameStatus'
+import StartButton from "@/components/StartButton.vue";
+const store = useGameStatusStore()
 
 </script>
 

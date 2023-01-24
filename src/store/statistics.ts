@@ -1,5 +1,5 @@
-import {defineStore} from 'pinia';
-import {ref, type Ref, watch} from 'vue';
+import { defineStore } from 'pinia';
+import { ref, type Ref, watch } from 'vue';
 
 interface StatisticsState {
     totalCount: Ref<number>
@@ -17,7 +17,6 @@ export const useStatisticsStore = defineStore('statistics', (): StatisticsState 
     const correctAnswers = ref(0)
     const totalAnswers = ref(0)
     const statisticsLocalStorage = JSON.parse(`${localStorage.getItem('statistics')}`)
-    const historyLocalStorage = JSON.parse(`${localStorage.getItem('history')}`) || []
 
     if (statisticsLocalStorage) {
         const {
@@ -45,16 +44,21 @@ export const useStatisticsStore = defineStore('statistics', (): StatisticsState 
     }
 
     const resetStatistics = () => {
+        const statisticsLocalStorage = JSON.parse(`${localStorage.getItem('statistics')}`)
+        const historyLocalStorage = JSON.parse(`${localStorage.getItem('history')}`) || []
+        localStorage.setItem('statistics', JSON.stringify({}))
+        localStorage.setItem('isGameStarted', JSON.stringify(false))
+        if (totalAnswers.value > 0) {
+            localStorage.setItem('history', JSON.stringify([...historyLocalStorage, statisticsLocalStorage]))
+        }
         totalCount.value = 0
         wrongAnswers.value = 0
         correctAnswers.value = 0
         totalAnswers.value = 0
-        localStorage.setItem('statistics', JSON.stringify({}))
-        localStorage.setItem('isGameStarted', JSON.stringify(false))
-        localStorage.setItem('history', JSON.stringify([...historyLocalStorage, statisticsLocalStorage]))
     }
 
     watch(() => totalAnswers.value, () => {
+        console.log(totalCount.value, wrongAnswers.value, correctAnswers.value, totalAnswers.value);
         localStorage.setItem('statistics', JSON.stringify({
             totalCount: totalCount.value,
             wrongAnswers: wrongAnswers.value,

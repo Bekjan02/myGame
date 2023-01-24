@@ -1,7 +1,7 @@
 <script setup lang="ts">
 interface AlertProps {
    modelValue: boolean
-   answer: string | null
+   answer: string
    isCorrect: boolean
 }
 
@@ -18,10 +18,9 @@ const closeAlert = () => {
 </script>
 
 <template>
-   <div>
-      <v-alert class="alert" icon="mdi-material-design" max-width="500px" :model-value="props.modelValue"
-         @update:model-value="closeAlert" :closable="true" border="start" close-text="Close Alert" @click="emits('close')"
-         dismissible :type="props.isCorrect ? 'success' : 'error'">
+   <v-overlay class="d-flex align-center justify-center" contained :model-value="props.modelValue"
+      @update:model-value="closeAlert">
+      <v-alert class="alert" max-width="500px" border="start" :type="props.isCorrect ? 'success' : 'error'">
          <div>
             <div>
                <span v-if="props.isCorrect">Вы ответили правильно</span>
@@ -32,16 +31,10 @@ const closeAlert = () => {
             <span v-if="!isCorrect">Правильный ответ: {{ props?.answer }}</span>
          </div>
       </v-alert>
-   </div>
+   </v-overlay>
 </template>
 
 
-
 <style scoped>
-.alert {
-   position: fixed;
-   top: 50%;
-   left: 50%;
-   transform: translate(-50%, -50%);
-}
+
 </style>

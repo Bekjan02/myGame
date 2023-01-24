@@ -1,19 +1,19 @@
-import type { Data } from './getData';
+import type { Question } from "@/types";
 import { defineStore } from "pinia";
 import { ref, type Ref } from "vue";
 
 interface DialogState {
-   dialog: Data;
-   openModal: (question: any) => void;
+   dialog: any;
+   openModal: (question: Question) => void;
    isOpen: Ref<boolean>;
    closeModal: () => void
 }
 
 export const useDialogStore = defineStore("dialog", (): DialogState => {
-   const dialog = ref<any>({});
-   const isOpen = ref<boolean>(false)
+   const dialog = ref<Question>();
+   const isOpen = ref(false)
 
-   const openModal = (question: Data) => {
+   const openModal = (question: Question) => {
       dialog.value = question;
       isOpen.value = !isOpen.value
    };
